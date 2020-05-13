@@ -55,9 +55,14 @@ class PayrollUploadController extends ModuleController
             'visible' => true,
         ],
         'created_at' => [
-            'title' => 'Created At',
+            'title' => 'Uploaded At',
             'field' => 'created_at',
             'sort' => true,
+            'visible' => true,
+        ],
+        'user_info' => [
+            'title' => 'Uploaded by',
+            'field' => 'user_info',
             'visible' => true,
         ],
     ];
@@ -354,7 +359,7 @@ class PayrollUploadController extends ModuleController
 
         $record = PayrollUpload::updateOrCreate(
             ['title' => $recordTitle],
-            ['of_link' => $fileName, 'uf_link' => $xmlfileName]
+            ['of_link' => $fileName, 'uf_link' => $xmlfileName, 'user_id' => auth()->user()->id]
         );
 
         $notify_email = app(SettingRepository::class)->byKey('notification_emails', 'notification');

@@ -17,11 +17,17 @@ class CreatePayrollUploadsTables extends Migration
             // your generated model and form include a description field, to get you started, but feel free to get rid of it if you don't need it
             $table->string('of_link', 2048)->nullable();
             $table->string('uf_link', 2048)->nullable();
+            $table->integer('user_id')->unsigned();
 
             // add those 2 columns to enable publication timeframe fields (you can use publish_start_date only if you don't need to provide the ability to specify an end date)
             // $table->timestamp('publish_start_date')->nullable();
             // $table->timestamp('publish_end_date')->nullable();
-        });        
+        });
+        
+        Schema::table('payroll_uploads', function($table) {
+            $table->foreign('user_id')->references('id')->on('twill_users');
+        });
+     
     }
 
     public function down()
