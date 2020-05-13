@@ -24,7 +24,7 @@
     <link href="{{ twillAsset('chunk-vendors.css' )}}" rel="stylesheet" crossorigin/>
 @endunless
 
-<link href="{{ asset('css/custom.css') }}" rel="stylesheet" crossorigin/>
+<link href="{{ asset('css/stylesheet.css') }}" rel="stylesheet" crossorigin/>
 
 <!-- head.js -->
 <script>
