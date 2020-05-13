@@ -3,6 +3,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=Edge">
 <meta name="robots" content="noindex,nofollow" />
 <meta name="csrf-token" content="{{ csrf_token() }}">
+<link rel="shortcut icon" href="{{ asset('/img/favicon.png') }}" />
 
 <title>{{ config('app.name') }}</title>
 
@@ -23,7 +24,7 @@
     <link href="{{ twillAsset('chunk-vendors.css' )}}" rel="stylesheet" crossorigin/>
 @endunless
 
-<link href="{{ asset('css/custom-admin.css') }}" rel="stylesheet" crossorigin/>
+<link href="{{ asset('css/custom.css') }}" rel="stylesheet" crossorigin/>
 
 <!-- head.js -->
 <script>
