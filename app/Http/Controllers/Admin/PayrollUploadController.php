@@ -39,6 +39,8 @@ class PayrollUploadController extends ModuleController
         'duplicate' => false
     ];
 
+    protected $perPage = 10;
+
    /*
      * Available columns of the index view
      */

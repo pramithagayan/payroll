@@ -43,6 +43,9 @@
 .filepond--panel.filepond--panel-root * {
     background: #5e5e5e!important;
 }
+.filepond--list.filepond--list {
+    margin-top: 10px;
+}
 .header__item a,
 .header__user a,
 .header__user a .icon {
