@@ -1,0 +1,103 @@
+@import url('https://unpkg.com/filepond/dist/filepond.css');
+.app {
+    min-height: calc(100vh - 104px);
+}
+.flex.flex-wrap.align-items-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 104px);
+}
+.flex.flex-wrap.align-items-center > * {
+    width: 100%;
+}
+.body--dashboard {
+    background: #5e5e5e;
+}
+.header {
+    padding-bottom: 0;
+    background: #df2027;
+}
+.header-logo {
+    max-height: 60px;
+    padding: 12px 0;
+}
+.footer {
+    padding: 12px 0;
+    background: #494949;
+}
+.filepond--root.filepond.filepond--hopper {
+    background: #5e5e5e;
+}
+.filepond--root .filepond--drop-label {
+    background: #5e5e5e;
+    color: #fff;
+    font-size: 24px;
+}
+.filepond--panel.filepond--panel-root * {
+    background: #5e5e5e!important;
+}
+.header__item a,
+.header__user a,
+.header__user a .icon {
+    color: #fff;
+}
+.ham__icon:after, 
+.ham__icon:before,
+.ham__line {
+    background: #ffffff;
+}
+/** Login **/
+
+section.login {
+    padding: 20px;
+    background: #5e5e5e;
+    border-radius: 2px;
+}
+.login {
+    padding-bottom: 0;
+}
+h2.f--heading.login__heading {
+    text-align: center;
+    color: #fff;
+    font-weight: 800;
+    font-size: 30px;
+    text-transform: uppercase;
+}
+.login__heading+.login__fieldset {
+    margin-top: 0;
+}
+.login__button {
+    font-size: 1.2em;
+    font-weight: 700;
+    text-transform: uppercase;
+    background-color: #df2027;
+    margin: 20px 0 0;
+}
+.a17.a17--login .logo {
+    text-align: center;
+}
+.a17.a17--login .logo img {
+    max-width: 175px;
+}
+.login__help, .login__label {
+    display: block;
+    margin-top: 35px;
+    margin-bottom: 10px;
+    color: #fff;
+}
+.dropdown.dropdown--bottom.dropdown--right.dropdown--fixed {
+    display: none;
+}
+a.uf-btn {
+    text-align: center;
+    margin: 0 auto;
+    padding: 5px 20px;
+    width: auto;
+    background: #df2027;
+    color: #fff;
+    font-weight: bold;
+}
+li.header__item.s--on a {
+    background: #d1080f;
+}
