@@ -66,7 +66,7 @@
     <script>
         const inputElement = document.querySelector('input[type="file"]');
         const pond = FilePond.create( inputElement, {
-            labelIdle: `Drag & Drop Your Payroll Files`,
+            labelIdle: `Drag & Drop Your Payroll Files Here<span class="small">You may click here to select a file</span>`,
             allowRevert: false
         } );
         FilePond.setOptions({

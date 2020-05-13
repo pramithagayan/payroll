@@ -30,9 +30,15 @@
     background: #5e5e5e;
 }
 .filepond--root .filepond--drop-label {
-    background: #5e5e5e;
+    background: #686868;
     color: #fff;
     font-size: 24px;
+    border: 1px dashed #999;
+    border-radius: 10px;
+}
+.filepond--root .filepond--drop-label,
+.filepond--root .filepond--drop-label * {
+    cursor: pointer;
 }
 .filepond--panel.filepond--panel-root * {
     background: #5e5e5e!important;
@@ -100,4 +106,8 @@ a.uf-btn {
 }
 li.header__item.s--on a {
     background: #d1080f;
+}
+.small {
+    font-size: 14px!important;
+    display: block;
 }
