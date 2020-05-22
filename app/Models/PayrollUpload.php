@@ -22,11 +22,6 @@ class PayrollUpload extends Model
         return Carbon::parse($value)->format('m/d/Y H:ia');
     }
 
-    public function getUfLinkAttribute($value)
-    {
-        return '<a href="'.Storage::url('payroll/'.$value).'" class="uf-btn" download>Download</a>';
-    }
-
     public function getUserInfoAttribute($value)
     {
         $user = \A17\Twill\Models\User::where('id', $this->user_id)->first();

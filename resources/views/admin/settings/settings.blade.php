@@ -7,4 +7,8 @@
         'textLimit' => '2096',
         'note' => 'Separate Multiple Addresses by Commas'
     ])
+    @formField('input', [
+        'label' => 'Fee Assess Amount',
+        'name' => 'fee_assess',
+    ])
 @stop

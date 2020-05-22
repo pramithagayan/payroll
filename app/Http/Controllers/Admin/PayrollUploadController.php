@@ -11,6 +11,7 @@ use App\Models\PayrollUpload;
 use A17\Twill\Repositories\SettingRepository;
 use App\Mail\UploadNotification;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Collection;
 
 class PayrollUploadController extends ModuleController
 {
@@ -28,13 +29,13 @@ class PayrollUploadController extends ModuleController
         'bulkFeature' => false,
         'restore' => false,
         'bulkRestore' => false,
-        'delete' => false,
+        'delete' => true,
         'bulkDelete' => false,
         'reorder' => false,
         'permalink' => false,
         'bulkEdit' => false,
         'editInModal' => false,
-        'forceDelete' => false,
+        'forceDelete' => true,
         'bulkForceDelete' => false,
         'duplicate' => false
     ];
@@ -48,11 +49,6 @@ class PayrollUploadController extends ModuleController
         'title' => [ // field column
             'title' => 'Name',
             'field' => 'title',
-        ],
-        'uf_link' => [
-            'title' => 'Download XML File',
-            'field' => 'uf_link',
-            'visible' => true,
         ],
         'created_at' => [
             'title' => 'Uploaded At',
@@ -85,6 +81,86 @@ class PayrollUploadController extends ModuleController
     protected $TranCode = "";
     protected $identNum = "";
     protected $identName = "";
+
+    /**
+     * @param \Illuminate\Database\Eloquent\Collection $items
+     * @return array
+     */
+    protected function getIndexTableData($items)
+    {
+        $translated = $this->moduleHas('translations');
+        return $items->map(function ($item) use ($translated) {
+            $columnsData = Collection::make($this->indexColumns)->mapWithKeys(function ($column) use ($item) {
+                return $this->getItemColumnData($item, $column);
+            })->toArray();
+
+            $name = $columnsData[$this->titleColumnKey];
+
+            if (empty($name)) {
+                if ($this->moduleHas('translations')) {
+                    $fallBackTranslation = $item->translations()->where('active', true)->first();
+
+                    if (isset($fallBackTranslation->{$this->titleColumnKey})) {
+                        $name = $fallBackTranslation->{$this->titleColumnKey};
+                    }
+                }
+
+                $name = $name ?? ('Missing ' . $this->titleColumnKey);
+            }
+
+            unset($columnsData[$this->titleColumnKey]);
+
+            $itemIsTrashed = method_exists($item, 'trashed') && $item->trashed();
+            $itemCanDelete = $this->getIndexOption('delete') && ($item->canDelete ?? true);
+            $canEdit = $this->getIndexOption('edit');
+            $canDuplicate = $this->getIndexOption('duplicate');
+
+            return array_replace([
+                'id' => $item->id,
+                'name' => $name,
+                'publish_start_date' => $item->publish_start_date,
+                'publish_end_date' => $item->publish_end_date,
+                'edit' => $canEdit ? $this->getModuleRoute($item->id, 'edit') : null,
+                'delete' => $itemCanDelete ? $this->getModuleRoute($item->id, 'destroy') : null,
+            ] + ($this->getIndexOption('editInModal') ? [
+                'editInModal' => $this->getModuleRoute($item->id, 'edit'),
+                'updateUrl' => $this->getModuleRoute($item->id, 'update'),
+            ] : []) + ($this->getIndexOption('publish') && ($item->canPublish ?? true) ? [
+                'published' => $item->published,
+            ] : []) + ($this->getIndexOption('feature') && ($item->canFeature ?? true) ? [
+                'featured' => $item->{$this->featureField},
+            ] : []) + (($this->getIndexOption('restore') && $itemIsTrashed) ? [
+                'deleted' => true,
+            ] : []) + ($translated ? [
+                'languages' => $item->getActiveLanguages(),
+            ] : []) + $columnsData, $this->indexItemData($item));
+        })->toArray();
+    }
+
+    /**
+     * @param int $id
+     * @param int|null $submoduleId
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function destroy($id, $submoduleId = null)
+    {
+        $item = $this->repository->getById($submoduleId ?? $id);
+        if ($this->repository->delete($submoduleId ?? $id)) {
+            $this->fireEvent();
+            activity()->performedOn($item)->log('deleted');
+
+            if ($this->repository->forceDelete($submoduleId ?? $id)) {
+                Storage::delete('public/payroll/'.$item->of_link);
+                Storage::delete('public/payroll/'.$item->uf_link);
+                $this->fireEvent();
+                return $this->respondWithSuccess($this->modelTitle . ' destroyed!');
+            }
+    
+            return $this->respondWithSuccess($this->modelTitle . ' moved to trash!');
+        }
+
+        return $this->respondWithError($this->modelTitle . ' was not destroyed. Something wrong happened!');
+    }
 
     public function upload(Request $request){
         $dt = Carbon::now();
@@ -314,7 +390,7 @@ class PayrollUploadController extends ModuleController
 
         $postingRequest = $dom->createElement('postingRequest'); 
         $targetGLAccountSerial = $dom->createElement('targetGLAccountSerial', '3690');
-        $postingRequest->appendChild($targetSerial);
+        $postingRequest->appendChild($targetGLAccountSerial);
         $targetCategory = $dom->createElement('targetGLCategory');
         $targetCategory->setAttribute('option', 'DG');
         $postingRequest->appendChild($targetCategory);
@@ -331,6 +407,8 @@ class PayrollUploadController extends ModuleController
         $step->appendChild($postingRequest);
         $transaction->appendChild($step);
 
+        $fee_assess = app(SettingRepository::class)->byKey('fee_assess');
+
         $step = $dom->createElement('step'); 
         $feeAssess = $dom->createElement('feeAssess'); 
         $feeSerial = $dom->createElement('feeSerial', '1806');
@@ -340,7 +418,7 @@ class PayrollUploadController extends ModuleController
         $feeAssess->appendChild($targetCategory);
         $targetSerial = $dom->createElement('targetSerial', '914212');
         $feeAssess->appendChild($targetSerial);
-        $specifiedFeeAmount = $dom->createElement('specifiedFeeAmount', 10.00);
+        $specifiedFeeAmount = $dom->createElement('specifiedFeeAmount', $fee_assess);
         $feeAssess->appendChild($specifiedFeeAmount);
         $specifiedFeeOption = $dom->createElement('specifiedFeeOption');
         $specifiedFeeOption->setAttribute('option', 'Y');
@@ -362,7 +440,7 @@ class PayrollUploadController extends ModuleController
             ['of_link' => $fileName, 'uf_link' => $xmlfileName, 'user_id' => auth()->user()->id]
         );
 
-        $notify_email = app(SettingRepository::class)->byKey('notification_emails', 'notification');
+        $notify_email = app(SettingRepository::class)->byKey('notification_emails');
         $notify_email = explode(',', $notify_email);
 
         $users = [];

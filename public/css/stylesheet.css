@@ -94,9 +94,6 @@ h2.f--heading.login__heading {
     margin-bottom: 10px;
     color: #fff;
 }
-.dropdown.dropdown--bottom.dropdown--right.dropdown--fixed {
-    display: none;
-}
 a.uf-btn {
     text-align: center;
     margin: 0 auto;

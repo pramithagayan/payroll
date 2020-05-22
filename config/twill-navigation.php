@@ -13,12 +13,12 @@ return [
     'settings' => [
         'title' => 'Settings',
         'route' => 'admin.settings',
-        'params' => ['section' => 'notification'],
+        'params' => ['section' => 'settings'],
         'primary_navigation' => [
-            'notification' => [
-                'title' => 'Notification Settings',
+            'settings' => [
+                'title' => 'Settings',
                 'route' => 'admin.settings',
-                'params' => ['section' => 'notification']
+                'params' => ['section' => 'settings']
             ],
         ]
     ],

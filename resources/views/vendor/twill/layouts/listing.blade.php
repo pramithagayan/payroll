@@ -126,8 +126,8 @@
         @endif
 
         <a17-dialog ref="warningDeleteRow" modal-title="Delete item" confirm-label="Delete">
-            <p class="modal--tiny-title"><strong>Move to trash</strong></p>
-            <p>The item won't be deleted but moved to trash.</p>
+            <p class="modal--tiny-title"><strong>Are You Sure?</strong></p>
+            <p>The item and the related files will be deleted. The item won't be able to be restored anymore.</p>
         </a17-dialog>
 
         <a17-dialog ref="warningDestroyRow" modal-title="Destroy item" confirm-label="Destroy">
