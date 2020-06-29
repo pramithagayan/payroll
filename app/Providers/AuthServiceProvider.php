@@ -116,6 +116,18 @@ class AuthServiceProvider extends ServiceProvider
                 return $this->userHasRole($user, [UserRole::ADMIN]) && ($editedUserObject ? $user->id !== $editedUserObject->id && $editedUserObject->role !== self::SUPERADMIN : false);
             });
         });
+
+        Gate::define('setting-permission', function ($user) {
+            return $this->authorize($user, function ($user) {
+                return $this->userHasRole($user, [UserRole::ADMIN, UserRole::VIEWONLY]);
+            });
+        });
+
+        Gate::define('dashboard-permission', function ($user) {
+            return $this->authorize($user, function ($user) {
+                return $this->userHasRole($user, [UserRole::ADMIN, UserRole::PUBLISHER]);
+            });
+        });
       
         Gate::define('impersonate', function ($user) {
             return $user->role === self::SUPERADMIN;
