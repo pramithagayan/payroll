@@ -2,6 +2,7 @@
 
 return [
 	'dashboard' => [
+        'can' => 'dashboard-permission',
 	    'title' => 'New Upload',
 	    'module' => false,
 	    'route' => 'admin.dashboard'
@@ -11,6 +12,7 @@ return [
         'module' => true
     ],
     'settings' => [
+        'can' => 'setting-permission',
         'title' => 'Settings',
         'route' => 'admin.settings',
         'params' => ['section' => 'settings'],

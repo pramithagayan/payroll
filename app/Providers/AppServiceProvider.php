@@ -24,6 +24,16 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        $this->app->bind(
+            \A17\Twill\Http\Controllers\Admin\SettingController::class,
+            \App\Http\Controllers\Admin\SettingController::class,
+        );
+
+        $this->app->bind(
+            \A17\Twill\Http\Controllers\Admin\DashboardController::class,
+            \App\Http\Controllers\Admin\DashboardController::class,
+        );
+
         if (\App::environment('production')) {
             URL::forceScheme('https');
         }
