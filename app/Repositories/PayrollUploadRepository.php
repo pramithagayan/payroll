@@ -27,7 +27,7 @@ class PayrollUploadRepository extends ModuleRepository
      */
     public function get($with = [], $scopes = [], $orders = [], $perPage = 20, $forcePagination = false)
     {
-        if(in_array(\Auth::guard('twill_users')->user()->role, ['SUPERADMIN', 'ADMIN'])) {
+        if(in_array(\Auth::guard('twill_users')->user()->role, ['SUPERADMIN', 'ADMIN', 'VIEWONLY'])) {
             $query = $this->model->with($with);
         } else {
             $query = $this->model->where('user_id', \Auth::guard('twill_users')->user()->id)->with($with);
